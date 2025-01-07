@@ -1,7 +1,7 @@
 package app
 
-import "net/http"
+import "github.com/osamikoyo/goomu/internal/server"
 
-type App struct{
-	server *http.Server
+func App()  {
+	server.New().Run()
 }
