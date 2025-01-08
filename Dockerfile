@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 RUN go mod download
-RUN go build -o main /cmd/goomu/main.go
+RUN go build -o main cmd/goomu/main.go
 
 FROM alpine:3.15
 
