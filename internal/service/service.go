@@ -2,16 +2,17 @@ package service
 
 import (
 	"github.com/osamikoyo/goomu/internal/filer"
-	"github.com/osamikoyo/goomu/internal/filer/models"
+	"github.com/osamikoyo/goomu/pkg/loger"
 )
-
-type Service interface{
-	Save(models.File) error
-	Search(filter models.Searchfilter) ([]models.File, error)
-	Display(group_name string) ([]models.File, error)
-}
 
 type FilerService struct{
 	Storage filer.Filer
+	Logger loger.Logger
 }
 
+func New() *FilerService {
+	return &FilerService{
+		Logger: loger.New(),
+		Storage: filer.New(),
+	}
+}

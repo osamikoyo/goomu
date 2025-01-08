@@ -5,14 +5,14 @@ import (
 	"github.com/osamikoyo/goomu/internal/filer/models"
 )
 
-func (h Handler) Save(c echo.Context) error {
+func (h Handler) saveHandler(c echo.Context) error {
 	file, err := c.FormFile("file")
 	if err != nil{
 		return err
 	}
 
-	return h.Filer.Save(models.File{
+	return h.FileService.Save(models.File{
 		Header: file,
 		Group: c.FormValue("group"),
 	})
-} 
+}

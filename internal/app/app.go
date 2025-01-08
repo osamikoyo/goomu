@@ -1,7 +1,16 @@
 package app
 
-import "github.com/osamikoyo/goomu/internal/server"
+import (
+	"context"
+	"os"
+	"os/signal"
+
+	"github.com/osamikoyo/goomu/internal/server"
+)
 
 func App()  {
-	server.New().Run()
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
+	server.New().Run(ctx)
 }

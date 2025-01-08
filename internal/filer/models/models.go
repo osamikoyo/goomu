@@ -10,5 +10,12 @@ type File struct{
 type Searchfilter struct{
 	Ext string `json:"ext"`
 	Name string `json:"name"` //without ext
-	Type string `json:"group"`
+}
+
+type GittingFile struct{
+	Name string 
+	Path string
+	Size int64
+	Header *multipart.FileHeader
+	Group string
 }

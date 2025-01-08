@@ -4,19 +4,34 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/osamikoyo/goomu/internal/filer"
+	"github.com/osamikoyo/goomu/internal/service"
 	"github.com/osamikoyo/goomu/pkg/loger"
 )
 
 type Handler struct{
-	Filer filer.Filer
+	FileService service.FilerService
 	SaveDir string
 }
 
+func New() Handler {
+	return Handler{
+		FileService: service.FilerService{
+			Storage: filer.New(),
+		},
+	}
+}
 
-func errorRoute(h echo.HandlerFunc) echo.HandlerFunc{
+func errorRoute(h echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		if err := h(c);err != nil{
-			loger.New().Error().Err(err)
+		err := h(c)
+		if err != nil {
+			loger.New().Error().
+				Str("path", c.Path()).
+				Str("method", c.Request().Method).
+				Err(err).
+				Msg("Request failed")
+			
+			return err
 		}
 		return nil
 	}
@@ -24,5 +39,9 @@ func errorRoute(h echo.HandlerFunc) echo.HandlerFunc{
 
 func (h Handler) RegisterRoutes(e *echo.Echo) {
 	e.Use(middleware.Logger())
-	e.POST("/file/upload", errorRoute(h.Save))
+	e.Use(middleware.Recover())
+
+	e.POST("/file/get/:group", errorRoute(h.get_AllHandler))
+	e.POST("/file/get", errorRoute(h.searchHandler))
+	e.POST("/file/upload", errorRoute(h.saveHandler))
 }
